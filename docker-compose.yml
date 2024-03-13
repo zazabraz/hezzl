@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-hezzl
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5433"
+
+  clickhouse-server:
+    image: yandex/clickhouse-server
+    container_name: clickhouse-server
+    ports:
+      - "8123:8123"
+
+  nats:
+    image: nats:latest
+    container_name: nats-hezzl
+    ports:
+      - "4222:4222"
+
+  redis:
+    image: redis:latest
+    container_name: redis-hezzl
+    ports:
+      - "6379:6379"
