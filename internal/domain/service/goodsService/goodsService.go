@@ -15,7 +15,7 @@ import (
 type GoodsService interface {
 	Create(ctx context.Context, projectID int, name string) (*dto.Good, error)
 	//GetByIDAndProjectID(ctx context.Context, id int, projectId int) (*dto.Good, error)
-	GetList(ctx context.Context, limit int, offset int, projectId int) ([]*dto.Good, error)
+	GetList(ctx context.Context, limit int, offset int) ([]*dto.Good, error)
 	Update(ctx context.Context, id int, projectId int, name string, description string) (*dto.Good, error)
 	Reprioritize(ctx context.Context, id int, projectId int, name string, newPriority int) (*dto.Good, error)
 	DeleteByIDAndProjectID(ctx context.Context, id int, projectId int) (*dto.Good, error)
@@ -76,11 +76,11 @@ func (g goodsService) Create(ctx context.Context, projectID int, name string) (*
 	return created, err
 }
 
-func (g goodsService) GetList(ctx context.Context, limit int, offset int, projectId int) ([]*dto.Good, error) {
+func (g goodsService) GetList(ctx context.Context, limit int, offset int) ([]*dto.Good, error) {
 	var goods []*dto.Good
 	for i := offset; i > limit; i++ {
 		var good *dto.Good
-		good, err := g.goodsCache.GetByIdAndProjectID(ctx, i, projectId)
+		good, err := g.goodsCache.GetById(ctx, i)
 		if err != nil {
 			g.log.Errorln(err)
 			return nil, err
@@ -89,7 +89,7 @@ func (g goodsService) GetList(ctx context.Context, limit int, offset int, projec
 			goods = append(goods, good)
 			continue
 		}
-		good, err = g.goodsStorage.Get(ctx, i, projectId)
+		good, err = g.goodsStorage.Get(ctx, i)
 		if err != nil {
 			g.log.Errorln(err)
 			return nil, err
@@ -137,7 +137,7 @@ func (g goodsService) DeleteByIDAndProjectID(ctx context.Context, id int, projec
 		return nil, err
 	}
 	deleted.Removed = true
-	err = g.goodsCache.PopByIdAndProjectID(ctx, id, projectId)
+	err = g.goodsCache.PopByIdAndProjectID(ctx, id)
 	if err != nil {
 		g.log.Errorln(err)
 		return nil, err

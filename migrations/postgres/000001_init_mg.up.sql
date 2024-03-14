@@ -14,11 +14,12 @@ CREATE TABLE goods (
     removed      BOOL DEFAULT FALSE,
     created_at   TIMESTAMP DEFAULT NOW()
 );
+CREATE INDEX goods_project_id_name ON goods (project_id,name);
 
 CREATE OR REPLACE FUNCTION increment_priority()
     RETURNS TRIGGER AS $$
 BEGIN
-    NEW.priority := (SELECT COALESCE(MAX(priority),0) FROM goods) + 1;
+    NEW.priority := (SELECT COALESCE(MAX(priority),1) FROM goods) + 1;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

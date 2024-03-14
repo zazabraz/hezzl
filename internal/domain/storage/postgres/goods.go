@@ -63,17 +63,16 @@ func (g goodsStorage) Create(ctx context.Context, good *dto.Good) (*dto.Good, er
 	return created, nil
 }
 
-func (g goodsStorage) Get(ctx context.Context, id int, projectId int) (*dto.Good, error) {
+func (g goodsStorage) Get(ctx context.Context, id int) (*dto.Good, error) {
 	var good *dto.Good
 	err := g.pool.QueryRow(
 		ctx,
 		`
 			SELECT id,project_id,name,description,priority,removed,created_at
 			FROM goods
-			WHERE id = $1 AND project_id = $2
+			WHERE id = $1
 		`,
 		id,
-		projectId,
 	).Scan(
 		&good.ID,
 		&good.ProjectID,
@@ -176,7 +175,7 @@ func (g goodsStorage) DeleteByIDAndProjectID(ctx context.Context, id int, projec
 		ctx,
 		`
 			delete from goods
-			WHERE id = $1 AND project_id = $2
+			WHERE id = $1
 			RETURNING id,project_id,name,description,priority,removed,created_at
 		`,
 		id,

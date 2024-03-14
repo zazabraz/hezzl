@@ -9,9 +9,9 @@ import (
 
 type GoodsCacheService interface {
 	Set(context.Context, *dto.Good) error
-	GetByIdAndProjectID(context.Context, int, int) (*dto.Good, error)
+	GetById(context.Context, int) (*dto.Good, error)
 	Invalidate(context.Context, *dto.Good) error
-	PopByIdAndProjectID(ctx context.Context, id int, projectId int) error
+	PopByIdAndProjectID(ctx context.Context, id int) error
 }
 
 type goodsCacheService struct {
@@ -33,14 +33,14 @@ func (g goodsCacheService) Set(ctx context.Context, good *dto.Good) error {
 	return g.goodsCacheStorage.Create(ctx, good)
 }
 
-func (g goodsCacheService) GetByIdAndProjectID(ctx context.Context, id int, projectId int) (*dto.Good, error) {
-	return g.goodsCacheStorage.GetByIdAndProjectID(ctx, id, projectId)
+func (g goodsCacheService) GetById(ctx context.Context, id int) (*dto.Good, error) {
+	return g.goodsCacheStorage.GetByIdAndProjectID(ctx, id)
 }
 
 func (g goodsCacheService) Invalidate(ctx context.Context, good *dto.Good) error {
 	return g.goodsCacheStorage.Invalidate(ctx, good)
 }
 
-func (g goodsCacheService) PopByIdAndProjectID(ctx context.Context, id int, projectId int) error {
-	return g.goodsCacheStorage.PopByIdAndProjectID(ctx, id, projectId)
+func (g goodsCacheService) PopByIdAndProjectID(ctx context.Context, id int) error {
+	return g.goodsCacheStorage.PopByIdAndProjectID(ctx, id)
 }
